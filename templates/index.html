@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credentials — The Discord Bot Built for Serious Servers</title>
+  <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="/static/logo.svg" alt="Credentials" width="32" height="32" />
+        <span>Credentials</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#commands">Commands</a>
+        <a href="#setup">Setup</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      {% if logged_in %}
+      <a href="/dashboard" class="btn btn-primary nav-cta">Dashboard</a>
+      {% else %}
+      <a href="/login" class="btn btn-primary nav-cta">Login with Discord</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+    </div>
+    <div class="container">
+      <div class="hero-badge">Built for communities that mean it</div>
+      <h1 class="hero-title">
+        One bot.<br />
+        Every tool<br />
+        <span class="hero-accent">your server needs.</span>
+      </h1>
+      <p class="hero-sub">
+        Credentials handles moderation, giveaways, tickets, verification, custom permissions, welcome messages — all configurable through a web dashboard or bot commands.
+      </p>
+      <div class="hero-actions">
+        <a href="https://discord.com/oauth2/authorize?client_id={{ client_id }}&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-lg">Add to Discord</a>
+        {% if logged_in %}
+        <a href="/dashboard" class="btn btn-ghost btn-lg">Open Dashboard</a>
+        {% else %}
+        <a href="/login" class="btn btn-ghost btn-lg">Login to Dashboard</a>
+        {% endif %}
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">60+</span>
+          <span class="stat-label">Commands</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">Web</span>
+          <span class="stat-label">Dashboard</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Configurable</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="feature-strip">
+    <div class="container">
+      <div class="feature-strip-inner">
+        <div class="strip-item">Per-server prefix</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Role-based access</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Bypass roles</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Giveaway rigging</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Verification system</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Web dashboard</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Ticket system</div>
+        <div class="strip-dot"></div>
+        <div class="strip-item">Auto-logging</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">What it does</span>
+        <h2 class="section-title">Everything. Configured your way.</h2>
+        <p class="section-sub">Every setting is per-server, configurable from the web dashboard or bot commands. Nothing locked behind a paywall.</p>
+      </div>
+      <div class="features-grid">
+
+        <div class="feature-card feature-card--large">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Full Moderation Suite</h3>
+          <p>Ban, kick, timeout, mute, warn, purge, lock channels, set slowmode, and manage nicknames. Every action gets logged to your designated mod log channel.</p>
+          <div class="feature-tags">
+            <span>ban</span><span>kick</span><span>timeout</span><span>warn</span><span>mute</span><span>purge</span><span>lock</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3>Web Dashboard</h3>
+          <p>Log in with Discord. See all your servers. Configure everything — roles, permissions, verification, tickets — without touching a command.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <h3>Role-Based Permissions</h3>
+          <p>Set which roles are required to use any command. Mark roles as bypass so they skip all restrictions. Per-command, per-server.</p>
+        </div>
+
+        <div class="feature-card feature-card--large">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Giveaway System</h3>
+          <p>Start timed giveaways with multiple winners. Enable rigging to guarantee a specific user wins while still looking fair to everyone else. Reroll anytime.</p>
+          <div class="feature-tags">
+            <span>giveaway start</span><span>--rig @user</span><span>giveaway end</span><span>giveaway reroll</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 5l-6 6-3-3"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <h3>Verification System</h3>
+          <p>Auto-create an Unverified role, verification channel, and button. Account age requirements, bot kick-on-join, and full logging.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>Ticket System</h3>
+          <p>Deploy a ticket panel with one command. Private support channels created instantly. Add/remove members. Close cleanly.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+          </div>
+          <h3>Welcome & Leave Messages</h3>
+          <p>Custom messages with variables for username, server name, and member count. Auto-assign a role on join.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <h3>Fun Commands</h3>
+          <p>8ball, coinflip, dice rolls, RPS, roast, compliment, ship, rate, mock, jokes, and facts. Keeps things active.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="commands">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Command Reference</span>
+        <h2 class="section-title">Every command, documented.</h2>
+      </div>
+      <div class="cmd-tabs" id="cmdTabs">
+        <button class="cmd-tab active" data-cat="moderation">Moderation</button>
+        <button class="cmd-tab" data-cat="verification">Verification</button>
+        <button class="cmd-tab" data-cat="utility">Utility</button>
+        <button class="cmd-tab" data-cat="roles">Roles</button>
+        <button class="cmd-tab" data-cat="giveaway">Giveaway</button>
+        <button class="cmd-tab" data-cat="tickets">Tickets</button>
+        <button class="cmd-tab" data-cat="welcome">Welcome</button>
+        <button class="cmd-tab" data-cat="fun">Fun</button>
+      </div>
+      <div class="cmd-content" id="cmdContent"></div>
+    </div>
+  </section>
+
+  <section class="section" id="setup">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Getting Started</span>
+        <h2 class="section-title">Up in under three minutes.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>Invite the bot</h3>
+            <p>Click the invite link above and select your server. Grant Administrator for full functionality.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>Open the dashboard</h3>
+            <p>Log in with Discord at the top of this page. Your server will appear in the dashboard. Configure everything from there.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>Set your prefix (optional)</h3>
+            <p>Run <code>/prefix !</code> to change the command prefix. All commands work with the new prefix immediately.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h3>Set up verification (optional)</h3>
+            <p>Run <code>/verification setup</code> to auto-create the Unverified role and verification channel in one shot.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Questions</span>
+        <h2 class="section-title">FAQ</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">How does the dashboard work?</button>
+          <div class="faq-a">Log in with your Discord account. The dashboard shows all servers where you have Manage Server permission and the bot is present. Click a server to configure it — all changes save instantly to the database the bot reads from.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How does giveaway rigging work?</button>
+          <div class="faq-a">Use <code>giveaway start 1h 1 --rig @user Prize</code>. That user's entry is guaranteed to win if they react. From the outside it looks completely normal. Only you know.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Can I restrict specific commands to specific roles?</button>
+          <div class="faq-a">Yes. In the dashboard under Moderation, each command has its own role selector. Set which roles can use that command. Bypass roles skip all of these checks. You can also use <code>/cmdrole set &lt;command&gt; @role</code> in Discord.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How does the verification system work?</button>
+          <div class="faq-a">Run <code>/verification setup</code> in your server. It creates the Unverified role and a #verify channel with a button. New members automatically get the Unverified role. Clicking the button removes it. You can set account age requirements and log all verifications.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Does everything persist on restart?</button>
+          <div class="faq-a">Yes. All settings, warnings, bypass roles, command restrictions, verification config, and giveaway states are stored in a SQLite database. Nothing is lost on restart.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner">
+        <h2>Ready to set it up?</h2>
+        <p>Takes less than three minutes. Configure via dashboard or commands — whichever you prefer.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="https://discord.com/oauth2/authorize?client_id={{ client_id }}&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-lg">Add to Discord</a>
+          {% if logged_in %}
+          <a href="/dashboard" class="btn btn-ghost btn-lg">Open Dashboard</a>
+          {% else %}
+          <a href="/login" class="btn btn-ghost btn-lg">Login to Dashboard</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <img src="/static/logo.svg" alt="Credentials" width="28" height="28" />
+          <span>Credentials</span>
+        </div>
+        <div class="footer-links">
+          <a href="#features">Features</a>
+          <a href="#commands">Commands</a>
+          <a href="#setup">Setup</a>
+          {% if logged_in %}
+          <a href="/dashboard">Dashboard</a>
+          <a href="/logout">Log out</a>
+          {% else %}
+          <a href="/login">Login</a>
+          {% endif %}
+        </div>
+        <div class="footer-note">Not affiliated with Discord Inc.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('nav--scrolled', window.scrollY > 40);
+    });
+
+    const commands = {
+      moderation: [
+        { cmd: 'ban <@user> [reason]', desc: 'Permanently ban a member.' },
+        { cmd: 'unban <user_id>', desc: 'Unban a user by their ID.' },
+        { cmd: 'kick <@user> [reason]', desc: 'Kick a member.' },
+        { cmd: 'timeout <@user> <time> [reason]', desc: 'Timeout a member. Time: 10s, 5m, 2h, 1d.' },
+        { cmd: 'untimeout <@user>', desc: 'Remove a timeout.' },
+        { cmd: 'warn <@user> [reason]', desc: 'Issue a warning. Persistent and tracked.' },
+        { cmd: 'warnings <@user>', desc: 'View all warnings for a user.' },
+        { cmd: 'clearwarnings <@user>', desc: 'Clear all warnings for a user.' },
+        { cmd: 'mute <@user> [time] [reason]', desc: 'Mute a user. Auto-creates Muted role.' },
+        { cmd: 'unmute <@user>', desc: 'Unmute a user.' },
+        { cmd: 'purge <amount> [@user]', desc: 'Delete messages. Optional user filter.' },
+        { cmd: 'lock [#channel]', desc: 'Prevent @everyone from sending in a channel.' },
+        { cmd: 'unlock [#channel]', desc: 'Re-enable messaging.' },
+        { cmd: 'slowmode <seconds>', desc: 'Set channel slowmode. 0 to disable.' },
+        { cmd: 'nick <@user> [name]', desc: 'Change or reset a nickname.' },
+      ],
+      verification: [
+        { cmd: 'verification setup', desc: 'Auto-creates Unverified role and #verify channel with button. Recommended first step.' },
+        { cmd: 'verification enable', desc: 'Enable verification for the server.' },
+        { cmd: 'verification disable', desc: 'Disable verification (keeps configuration).' },
+        { cmd: 'verification panel [#channel]', desc: 'Send the verification embed with button to a channel.' },
+        { cmd: 'verification setrole unverified <@role>', desc: 'Set the Unverified role manually.' },
+        { cmd: 'verification setrole verified <@role>', desc: 'Set the Verified role assigned after passing verification.' },
+        { cmd: 'verification minage <days>', desc: 'Require a minimum account age. 0 to disable.' },
+      ],
+      utility: [
+        { cmd: 'ping', desc: 'Check API latency.' },
+        { cmd: 'prefix <new>', desc: 'Change the server prefix.' },
+        { cmd: 'serverinfo', desc: 'Server stats: owner, count, boosts, channels.' },
+        { cmd: 'userinfo [@user]', desc: 'User info: roles, join date, warnings.' },
+        { cmd: 'avatar [@user]', desc: 'Show a user\'s avatar.' },
+        { cmd: 'roleinfo <@role>', desc: 'Role details: members, color, creation date.' },
+        { cmd: 'invite', desc: 'Get the bot invite link.' },
+        { cmd: 'uptime', desc: 'How long the bot has been running.' },
+        { cmd: 'botinfo', desc: 'Bot stats: servers, users, commands.' },
+        { cmd: 'help [category]', desc: 'List commands or get category details.' },
+      ],
+      roles: [
+        { cmd: 'role add <@user> <@role>', desc: 'Add a role to a member.' },
+        { cmd: 'role remove <@user> <@role>', desc: 'Remove a role from a member.' },
+        { cmd: 'autorole <@role>', desc: 'Assign this role automatically to new members.' },
+        { cmd: 'autorole off', desc: 'Disable autorole.' },
+        { cmd: 'bypass add <@role>', desc: 'Grant full command bypass to a role.' },
+        { cmd: 'bypass remove <@role>', desc: 'Revoke bypass from a role.' },
+        { cmd: 'bypass list', desc: 'List all bypass roles.' },
+        { cmd: 'cmdrole set <command> <@role>', desc: 'Restrict a command to a specific role.' },
+        { cmd: 'cmdrole clear <command>', desc: 'Remove role restriction from a command.' },
+      ],
+      giveaway: [
+        { cmd: 'giveaway start <time> <winners> <prize>', desc: 'Start a timed giveaway. Example: giveaway start 1h 2 Nitro' },
+        { cmd: 'giveaway start ... --rig @user ...', desc: 'Rigged giveaway. That user wins if they enter. Hidden to everyone else.' },
+        { cmd: 'giveaway end <message_id>', desc: 'End a giveaway early.' },
+        { cmd: 'giveaway reroll <message_id>', desc: 'Pick new winners for a completed giveaway.' },
+      ],
+      tickets: [
+        { cmd: 'ticket setup <category> <@support_role>', desc: 'Configure ticket system. Required before use.' },
+        { cmd: 'ticket panel [#channel]', desc: 'Post the Open Ticket button.' },
+        { cmd: 'ticket close', desc: 'Close and delete the current ticket channel.' },
+        { cmd: 'ticket add <@user>', desc: 'Add a user to the current ticket.' },
+        { cmd: 'ticket remove <@user>', desc: 'Remove a user from the current ticket.' },
+      ],
+      welcome: [
+        { cmd: 'welcome channel <#channel>', desc: 'Set welcome message channel.' },
+        { cmd: 'welcome message <text>', desc: 'Set message. Variables: {user}, {server}, {count}' },
+        { cmd: 'leave channel <#channel>', desc: 'Set leave message channel.' },
+        { cmd: 'leave message <text>', desc: 'Set leave message. Variables: {user}, {server}' },
+        { cmd: 'logging <#channel>', desc: 'Set mod log channel.' },
+        { cmd: 'logging off', desc: 'Disable mod logging.' },
+      ],
+      fun: [
+        { cmd: '8ball <question>', desc: 'Ask the magic 8-ball.' },
+        { cmd: 'coinflip', desc: 'Heads or tails.' },
+        { cmd: 'roll [sides]', desc: 'Roll a die.' },
+        { cmd: 'rps <rock|paper|scissors>', desc: 'Rock paper scissors.' },
+        { cmd: 'choose <a> | <b>', desc: 'Pick from your options.' },
+        { cmd: 'joke', desc: 'Get a random joke.' },
+        { cmd: 'fact', desc: 'Get a random fact.' },
+        { cmd: 'roast [@user]', desc: 'Roast someone.' },
+        { cmd: 'compliment [@user]', desc: 'Compliment someone.' },
+        { cmd: 'ship <@u1> <@u2>', desc: 'Compatibility percentage.' },
+        { cmd: 'rate <thing>', desc: 'Rate anything out of 10.' },
+        { cmd: 'mock <text>', desc: 'mOcK tExT.' },
+      ]
+    };
+
+    function renderCommands(cat) {
+      const list = commands[cat];
+      document.getElementById('cmdContent').innerHTML = list.map(c =>
+        `<div class="cmd-row"><div class="cmd-name"><code>${c.cmd}</code></div><div class="cmd-desc">${c.desc}</div></div>`
+      ).join('');
+    }
+
+    document.querySelectorAll('.cmd-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.cmd-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderCommands(tab.dataset.cat);
+      });
+    });
+
+    renderCommands('moderation');
+
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+  </script>
+</body>
+</html>

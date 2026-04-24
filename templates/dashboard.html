@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Credentials</title>
+  <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/dash.css" />
+</head>
+<body class="dash-body">
+
+  <nav class="dash-nav">
+    <div class="dash-nav-inner">
+      <a href="/" class="dash-logo">
+        <img src="/static/logo.svg" width="28" height="28" alt="Credentials" />
+        <span>Credentials</span>
+      </a>
+      <div class="dash-nav-right">
+        <div class="dash-user">
+          <img src="https://cdn.discordapp.com/avatars/{{ user.id }}/{{ user.avatar }}.webp?size=64"
+               onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"
+               width="32" height="32" class="dash-user-avatar" alt="{{ user.username }}" />
+          <span class="dash-user-name">{{ user.username }}</span>
+        </div>
+        <a href="/logout" class="btn-logout">Log out</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="dash-main">
+    <div class="dash-container">
+
+      <div class="dash-page-header">
+        <h1>Your Servers</h1>
+        <p>Select a server to open the configuration dashboard. Only servers where you have Manage Server permission are shown.</p>
+      </div>
+
+      {% if mutual %}
+      <div class="server-section">
+        <div class="server-section-label">
+          <span class="server-section-dot server-section-dot--active"></span>
+          Bot is active — {{ mutual|length }} server{{ 's' if mutual|length != 1 }}
+        </div>
+        <div class="server-grid">
+          {% for g in mutual %}
+          <a href="/dashboard/{{ g.id }}" class="server-card server-card--active">
+            <div class="server-card-icon">
+              {% if g.icon %}
+              <img src="https://cdn.discordapp.com/icons/{{ g.id }}/{{ g.icon }}.webp?size=128"
+                   alt="{{ g.name }}" width="56" height="56" />
+              {% else %}
+              <div class="server-card-initial">{{ g.name[0].upper() }}</div>
+              {% endif %}
+            </div>
+            <div class="server-card-info">
+              <div class="server-card-name">{{ g.name }}</div>
+              <div class="server-card-sub">Configure</div>
+            </div>
+            <svg class="server-card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if other %}
+      <div class="server-section">
+        <div class="server-section-label">
+          <span class="server-section-dot"></span>
+          Bot not added — {{ other|length }} server{{ 's' if other|length != 1 }}
+        </div>
+        <div class="server-grid">
+          {% for g in other %}
+          <a href="https://discord.com/oauth2/authorize?client_id={{ client_id }}&permissions=8&scope=bot&guild_id={{ g.id }}"
+             target="_blank" class="server-card server-card--inactive">
+            <div class="server-card-icon">
+              {% if g.icon %}
+              <img src="https://cdn.discordapp.com/icons/{{ g.id }}/{{ g.icon }}.webp?size=128"
+                   alt="{{ g.name }}" width="56" height="56" />
+              {% else %}
+              <div class="server-card-initial">{{ g.name[0].upper() }}</div>
+              {% endif %}
+            </div>
+            <div class="server-card-info">
+              <div class="server-card-name">{{ g.name }}</div>
+              <div class="server-card-sub">Add to server</div>
+            </div>
+            <svg class="server-card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if not mutual and not other %}
+      <div class="dash-empty">
+        <p>No servers found where you have Manage Server permission.</p>
+        <a href="https://discord.com/oauth2/authorize?client_id={{ client_id }}&permissions=8&scope=bot" target="_blank" class="btn btn-primary">Add to a Server</a>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+</body>
+</html>

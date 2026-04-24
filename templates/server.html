@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ guild.name }} — Credentials Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/dash.css" />
+</head>
+<body class="dash-body">
+
+  <nav class="dash-nav">
+    <div class="dash-nav-inner">
+      <a href="/dashboard" class="dash-logo">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.5">
+          <path d="M15 9H3M9 3l-6 6 6 6"/>
+        </svg>
+        <img src="/static/logo.svg" width="26" height="26" alt="Credentials" />
+        <span>Credentials</span>
+      </a>
+      <div class="dash-nav-right">
+        <div class="dash-breadcrumb">
+          {% if guild.icon %}
+          <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.webp?size=64" width="20" height="20" style="border-radius:50%" alt="" />
+          {% endif %}
+          <span>{{ guild.name }}</span>
+        </div>
+        <div class="dash-user">
+          <img src="https://cdn.discordapp.com/avatars/{{ user.id }}/{{ user.avatar }}.webp?size=64"
+               onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"
+               width="30" height="30" class="dash-user-avatar" alt="{{ user.username }}" />
+        </div>
+        <a href="/logout" class="btn-logout">Log out</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="server-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="server-sidebar">
+      <div class="sidebar-guild">
+        {% if guild.icon %}
+        <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.webp?size=128"
+             width="44" height="44" style="border-radius:10px" alt="" />
+        {% else %}
+        <div class="server-card-initial sidebar-initial">{{ guild.name[0].upper() }}</div>
+        {% endif %}
+        <div>
+          <div class="sidebar-guild-name">{{ guild.name }}</div>
+          <div class="sidebar-guild-sub">{{ guild.member_count }} members</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-link active" data-section="overview">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+          Overview
+        </button>
+        <button class="sidebar-link" data-section="general">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>
+          General
+        </button>
+        <button class="sidebar-link" data-section="moderation">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1L2 3.5v5c0 3.5 2.5 5.8 6 7 3.5-1.2 6-3.5 6-7v-5L8 1z"/></svg>
+          Moderation
+        </button>
+        <button class="sidebar-link" data-section="verification">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 5l-6 6-3-3"/><circle cx="8" cy="8" r="7"/></svg>
+          Verification
+        </button>
+        <button class="sidebar-link" data-section="welcome">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 10c0 2.2-1.8 4-4 4H4a3 3 0 010-6h1a5 5 0 019 2z"/></svg>
+          Welcome & Leave
+        </button>
+        <button class="sidebar-link" data-section="tickets">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 10a2 2 0 01-2 2H5l-4 3V3a2 2 0 012-2h9a2 2 0 012 2z"/></svg>
+          Tickets
+        </button>
+        <button class="sidebar-link" data-section="autorole">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-2.8 2.2-5 5-5"/><path d="M12 10v4M10 12h4"/></svg>
+          Auto-Role
+        </button>
+      </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="server-content" id="serverContent">
+
+      <!-- LOADING -->
+      <div id="loadingState" class="content-loading">
+        <div class="spinner"></div>
+        <span>Loading configuration...</span>
+      </div>
+
+      <!-- OVERVIEW -->
+      <section class="content-section" id="section-overview" style="display:none">
+        <div class="section-header-block">
+          <h2>Overview</h2>
+          <p>Status of all configured features for this server.</p>
+        </div>
+        <div class="overview-grid" id="overviewGrid">
+          <!-- populated by JS -->
+        </div>
+        <div class="cmd-hint">
+          <strong>Commands work too.</strong> Everything here can also be configured with bot commands in your server.
+          Use <code id="serverPrefix">/</code><code>help</code> to see all commands.
+        </div>
+      </section>
+
+      <!-- GENERAL -->
+      <section class="content-section" id="section-general" style="display:none">
+        <div class="section-header-block">
+          <h2>General Settings</h2>
+          <p>Core bot settings for this server.</p>
+        </div>
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label">Command Prefix</label>
+            <p class="form-hint">The character(s) before commands. e.g. <code>!</code> or <code>?</code></p>
+            <input type="text" id="f-prefix" class="form-input form-input--short" maxlength="5" placeholder="/" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Mod Log Channel</label>
+            <p class="form-hint">All moderation actions are posted here.</p>
+            <select id="f-log_channel" class="form-select">
+              <option value="">Disabled</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('general')">Save Changes</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODERATION -->
+      <section class="content-section" id="section-moderation" style="display:none">
+        <div class="section-header-block">
+          <h2>Moderation</h2>
+          <p>Control who can use what commands. Bypass roles skip all restrictions. Command roles restrict individual commands.</p>
+        </div>
+
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label">Bypass Roles</label>
+            <p class="form-hint">Members with these roles can use any command regardless of restrictions. Treat this like a full-mod role.</p>
+            <div class="tag-picker" id="bypass-picker">
+              <div class="tag-list" id="bypass-tags"></div>
+              <select class="tag-add-select" id="bypass-select" onchange="tagAdd('bypass', this)">
+                <option value="">Add a role...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label">Command Role Restrictions</label>
+            <p class="form-hint">Restrict individual commands to specific roles. Leave empty to allow anyone with the base Discord permission. Bypass roles always skip these.</p>
+            <div class="cmd-role-table" id="cmdRoleTable">
+              <!-- populated by JS -->
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('moderation')">Save Changes</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VERIFICATION -->
+      <section class="content-section" id="section-verification" style="display:none">
+        <div class="section-header-block">
+          <h2>Verification System</h2>
+          <p>Require new members to verify before accessing the server. You can also run <code id="verPrefix">/</code><code>verification setup</code> to auto-create the role and channel.</p>
+        </div>
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label toggle-row">
+              Enable Verification
+              <label class="toggle">
+                <input type="checkbox" id="f-ver-enabled" />
+                <span class="toggle-slider"></span>
+              </label>
+            </label>
+            <p class="form-hint">When enabled, new members automatically receive the Unverified role on join.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label">Unverified Role</label>
+              <p class="form-hint">Assigned to new members. Should block access to most channels.</p>
+              <select id="f-ver-unverified_role_id" class="form-select">
+                <option value="">None</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Verified Role</label>
+              <p class="form-hint">Optional. Assigned after verification. Can be used to unlock channels.</p>
+              <select id="f-ver-verified_role_id" class="form-select">
+                <option value="">None</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Verification Channel</label>
+            <p class="form-hint">The channel where the verify button is posted.</p>
+            <select id="f-ver-channel_id" class="form-select">
+              <option value="">None</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Verification Log Channel</label>
+            <p class="form-hint">Each verification is logged here with user info and account age.</p>
+            <select id="f-ver-log_channel_id" class="form-select">
+              <option value="">Disabled</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">Verification Message</label>
+            <p class="form-hint">Text shown in the verification embed.</p>
+            <textarea id="f-ver-message" class="form-textarea" rows="3" placeholder="Click the button below to verify your account."></textarea>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label">Minimum Account Age (days)</label>
+              <p class="form-hint">Accounts newer than this are rejected. Set to 0 to disable.</p>
+              <input type="number" id="f-ver-min_account_age" class="form-input form-input--short" min="0" max="365" value="0" />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label toggle-row">
+              Kick Bots on Join
+              <label class="toggle">
+                <input type="checkbox" id="f-ver-kick_bots" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </label>
+            <p class="form-hint">Automatically kick bots that join the server if verification is enabled.</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label toggle-row">
+              DM Members on Join
+              <label class="toggle">
+                <input type="checkbox" id="f-ver-dm_on_join" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </label>
+            <p class="form-hint">Send new members a DM directing them to the verification channel.</p>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('verification')">Save Changes</button>
+            <span class="form-hint-inline">Changes take effect immediately.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- WELCOME & LEAVE -->
+      <section class="content-section" id="section-welcome" style="display:none">
+        <div class="section-header-block">
+          <h2>Welcome & Leave</h2>
+          <p>Post a message when members join or leave. Variables: <code>{user}</code> <code>{server}</code> <code>{count}</code></p>
+        </div>
+        <div class="form-block">
+          <div class="subsection-label">Join Messages</div>
+          <div class="form-field">
+            <label class="form-label">Welcome Channel</label>
+            <select id="f-welcome_channel" class="form-select">
+              <option value="">Disabled</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Welcome Message</label>
+            <textarea id="f-welcome_message" class="form-textarea" rows="3" placeholder="Welcome {user} to {server}! You are member #{count}."></textarea>
+          </div>
+
+          <div class="subsection-label" style="margin-top:28px">Leave Messages</div>
+          <div class="form-field">
+            <label class="form-label">Leave Channel</label>
+            <select id="f-leave_channel" class="form-select">
+              <option value="">Disabled</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Leave Message</label>
+            <textarea id="f-leave_message" class="form-textarea" rows="3" placeholder="{user} has left {server}."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('welcome')">Save Changes</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TICKETS -->
+      <section class="content-section" id="section-tickets" style="display:none">
+        <div class="section-header-block">
+          <h2>Ticket System</h2>
+          <p>When configured, members can open private support channels. Use <code id="ticketPrefix">/</code><code>ticket panel</code> in your server to deploy the button.</p>
+        </div>
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label">Ticket Category</label>
+            <p class="form-hint">New ticket channels are created inside this category.</p>
+            <select id="f-category_id" class="form-select">
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Support Role</label>
+            <p class="form-hint">This role is added to every ticket channel automatically.</p>
+            <select id="f-support_role_id" class="form-select">
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('tickets')">Save Changes</button>
+          </div>
+          <div class="info-block">
+            <strong>After saving:</strong> run <code id="ticketPrefix2">/</code><code>ticket panel [#channel]</code> in your Discord server to post the ticket button. The bot uses your saved settings automatically.
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTOROLE -->
+      <section class="content-section" id="section-autorole" style="display:none">
+        <div class="section-header-block">
+          <h2>Auto-Role</h2>
+          <p>Automatically assign a role to every new member that joins.</p>
+        </div>
+        <div class="form-block">
+          <div class="form-field">
+            <label class="form-label">Auto-Role</label>
+            <p class="form-hint">This role is assigned the moment a new member joins. Set to None to disable. Note: if verification is enabled, the Unverified role is assigned instead.</p>
+            <select id="f-autorole" class="form-select">
+              <option value="">Disabled</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveSection('general', true)">Save Changes</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GUILD_ID = "{{ guild.id }}";
+    let guildData = null;
+    let settingsData = null;
+
+    // ─── TAG PICKER ───────────────────────────
+
+    const tagState = {}; // id → Set of roleIds
+
+    function tagInit(id, roles, selectedIds) {
+      tagState[id] = new Set((selectedIds || []).map(String));
+      const sel = document.getElementById(id + '-select');
+      if (sel) {
+        sel.innerHTML = '<option value="">Add a role...</option>';
+        roles.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r.id;
+          opt.textContent = r.name;
+          opt.dataset.color = r.color || 0;
+          sel.appendChild(opt);
+        });
+      }
+      renderTags(id);
+    }
+
+    function renderTags(id) {
+      const el = document.getElementById(id + '-tags');
+      if (!el || !guildData) return;
+      el.innerHTML = '';
+      (tagState[id] || new Set()).forEach(roleId => {
+        const role = guildData.roles.find(r => r.id === roleId);
+        if (!role) return;
+        const color = role.color ? '#' + role.color.toString(16).padStart(6, '0') : '#657383';
+        const tag = document.createElement('div');
+        tag.className = 'role-tag';
+        tag.style.borderColor = color + '55';
+        tag.innerHTML = `<span class="role-tag-dot" style="background:${color}"></span>${role.name}<button type="button" class="role-tag-x" onclick="tagRemove('${id}','${roleId}')">×</button>`;
+        el.appendChild(tag);
+      });
+    }
+
+    function tagAdd(id, sel) {
+      const val = sel.value;
+      if (!val) return;
+      if (!tagState[id]) tagState[id] = new Set();
+      tagState[id].add(val);
+      renderTags(id);
+      sel.value = '';
+    }
+
+    function tagRemove(id, roleId) {
+      if (tagState[id]) {
+        tagState[id].delete(roleId);
+        renderTags(id);
+      }
+    }
+
+    function tagGet(id) {
+      return Array.from(tagState[id] || new Set());
+    }
+
+    // ─── COMMAND ROLE TABLE ──────────────────
+
+    const MOD_COMMANDS = [
+      'ban','unban','kick','timeout','untimeout',
+      'warn','warnings','clearwarnings','mute','unmute',
+      'purge','lock','unlock','slowmode','nick',
+      'role add','role remove','giveaway start','giveaway end','ticket close'
+    ];
+
+    function buildCmdRoleTable(cmdRoles) {
+      const table = document.getElementById('cmdRoleTable');
+      if (!table) return;
+      table.innerHTML = '';
+      MOD_COMMANDS.forEach(cmd => {
+        const safeId = 'cmd-' + cmd.replace(/\s+/g, '_');
+        const selectedIds = cmdRoles[cmd] || [];
+        const row = document.createElement('div');
+        row.className = 'cmd-role-row';
+        row.innerHTML = `
+          <div class="cmd-role-name"><code>${cmd}</code></div>
+          <div class="cmd-role-picker">
+            <div class="tag-list" id="${safeId}-tags"></div>
+            <select class="tag-add-select" id="${safeId}-select" onchange="tagAdd('${safeId}', this)">
+              <option value="">Add role...</option>
+            </select>
+          </div>
+        `;
+        table.appendChild(row);
+        tagInit(safeId, guildData.roles, selectedIds);
+      });
+    }
+
+    // ─── POPULATE SELECTS ────────────────────
+
+    function populateSelect(id, items, selectedId, emptyLabel) {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const firstOpt = sel.options[0];
+      sel.innerHTML = '';
+      const empty = document.createElement('option');
+      empty.value = '';
+      empty.textContent = emptyLabel || 'None';
+      sel.appendChild(empty);
+      items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.name;
+        if (item.id === String(selectedId)) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ─── LOAD DATA ───────────────────────────
+
+    async function loadAll() {
+      const [gRes, sRes] = await Promise.all([
+        fetch(`/api/guild/${GUILD_ID}`),
+        fetch(`/api/guild/${GUILD_ID}/settings`)
+      ]);
+      guildData = await gRes.json();
+      settingsData = await sRes.json();
+
+      const roles = guildData.roles;
+      const channels = guildData.text_channels;
+      const categories = guildData.categories;
+
+      // Update prefix display
+      document.querySelectorAll('[id$="Prefix"]').forEach(el => el.textContent = settingsData.general.prefix || '/');
+
+      // General
+      document.getElementById('f-prefix').value = settingsData.general.prefix || '/';
+      populateSelect('f-log_channel', channels, settingsData.general.log_channel, 'Disabled');
+
+      // Autorole
+      populateSelect('f-autorole', roles, settingsData.general.autorole, 'Disabled');
+
+      // Moderation
+      tagInit('bypass', roles, settingsData.moderation.bypass_roles);
+      buildCmdRoleTable(settingsData.moderation.command_roles || {});
+
+      // Verification
+      document.getElementById('f-ver-enabled').checked = settingsData.verification.enabled;
+      populateSelect('f-ver-unverified_role_id', roles, settingsData.verification.unverified_role_id, 'None');
+      populateSelect('f-ver-verified_role_id', roles, settingsData.verification.verified_role_id, 'None');
+      populateSelect('f-ver-channel_id', channels, settingsData.verification.channel_id, 'None');
+      populateSelect('f-ver-log_channel_id', channels, settingsData.verification.log_channel_id, 'Disabled');
+      document.getElementById('f-ver-message').value = settingsData.verification.message || '';
+      document.getElementById('f-ver-min_account_age').value = settingsData.verification.min_account_age || 0;
+      document.getElementById('f-ver-kick_bots').checked = settingsData.verification.kick_bots !== false;
+      document.getElementById('f-ver-dm_on_join').checked = settingsData.verification.dm_on_join !== false;
+
+      // Welcome
+      populateSelect('f-welcome_channel', channels, settingsData.welcome.welcome_channel, 'Disabled');
+      document.getElementById('f-welcome_message').value = settingsData.welcome.welcome_message || '';
+      populateSelect('f-leave_channel', channels, settingsData.welcome.leave_channel, 'Disabled');
+      document.getElementById('f-leave_message').value = settingsData.welcome.leave_message || '';
+
+      // Tickets
+      populateSelect('f-category_id', categories, settingsData.tickets.category_id, 'None');
+      populateSelect('f-support_role_id', roles, settingsData.tickets.support_role_id, 'None');
+
+      // Overview
+      buildOverview();
+
+      // Hide loader, show content
+      document.getElementById('loadingState').style.display = 'none';
+      showSection('overview');
+    }
+
+    // ─── OVERVIEW ────────────────────────────
+
+    function buildOverview() {
+      const grid = document.getElementById('overviewGrid');
+      if (!grid) return;
+      const s = settingsData;
+      const features = [
+        { label: 'Prefix', value: s.general.prefix || '/', status: 'info' },
+        { label: 'Mod Logging', value: chanName(s.general.log_channel) || 'Off', status: s.general.log_channel ? 'on' : 'off' },
+        { label: 'Auto-Role', value: roleName(s.general.autorole) || 'Off', status: s.general.autorole ? 'on' : 'off' },
+        { label: 'Verification', value: s.verification.enabled ? 'Enabled' : 'Disabled', status: s.verification.enabled ? 'on' : 'off' },
+        { label: 'Welcome Messages', value: chanName(s.welcome.welcome_channel) || 'Off', status: s.welcome.welcome_channel ? 'on' : 'off' },
+        { label: 'Leave Messages', value: chanName(s.welcome.leave_channel) || 'Off', status: s.welcome.leave_channel ? 'on' : 'off' },
+        { label: 'Ticket System', value: s.tickets.category_id ? 'Configured' : 'Not set up', status: s.tickets.category_id ? 'on' : 'off' },
+        { label: 'Bypass Roles', value: `${s.moderation.bypass_roles.length} role${s.moderation.bypass_roles.length !== 1 ? 's' : ''}`, status: 'info' },
+      ];
+      grid.innerHTML = features.map(f => `
+        <div class="overview-card">
+          <div class="overview-card-label">${f.label}</div>
+          <div class="overview-card-value">${f.value}</div>
+          <div class="overview-card-status overview-status--${f.status}"></div>
+        </div>
+      `).join('');
+    }
+
+    function chanName(id) {
+      if (!id || !guildData) return null;
+      const ch = guildData.text_channels.find(c => c.id === String(id));
+      return ch ? '#' + ch.name : null;
+    }
+
+    function roleName(id) {
+      if (!id || !guildData) return null;
+      const r = guildData.roles.find(r => r.id === String(id));
+      return r ? r.name : null;
+    }
+
+    // ─── SECTION SWITCHING ───────────────────
+
+    function showSection(name) {
+      document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      const sec = document.getElementById('section-' + name);
+      if (sec) sec.style.display = 'block';
+      const link = document.querySelector(`[data-section="${name}"]`);
+      if (link) link.classList.add('active');
+    }
+
+    document.querySelectorAll('.sidebar-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (settingsData) showSection(btn.dataset.section);
+      });
+    });
+
+    // ─── SAVE FUNCTIONS ──────────────────────
+
+    async function saveSection(section, isAutoRole) {
+      let body = {};
+      if (section === 'general') {
+        body = {
+          prefix: document.getElementById('f-prefix').value.trim() || '/',
+          log_channel: document.getElementById('f-log_channel').value || null,
+          autorole: document.getElementById('f-autorole') ? document.getElementById('f-autorole').value || null : (settingsData.general.autorole || null),
+        };
+      } else if (section === 'welcome') {
+        body = {
+          welcome_channel: document.getElementById('f-welcome_channel').value || null,
+          welcome_message: document.getElementById('f-welcome_message').value,
+          leave_channel: document.getElementById('f-leave_channel').value || null,
+          leave_message: document.getElementById('f-leave_message').value,
+        };
+      } else if (section === 'moderation') {
+        const cmdRoles = {};
+        MOD_COMMANDS.forEach(cmd => {
+          const safeId = 'cmd-' + cmd.replace(/\s+/g, '_');
+          const roles = tagGet(safeId);
+          if (roles.length > 0) cmdRoles[cmd] = roles;
+        });
+        body = {
+          bypass_roles: tagGet('bypass'),
+          command_roles: cmdRoles,
+        };
+      } else if (section === 'verification') {
+        body = {
+          enabled: document.getElementById('f-ver-enabled').checked,
+          unverified_role_id: document.getElementById('f-ver-unverified_role_id').value || null,
+          verified_role_id: document.getElementById('f-ver-verified_role_id').value || null,
+          channel_id: document.getElementById('f-ver-channel_id').value || null,
+          log_channel_id: document.getElementById('f-ver-log_channel_id').value || null,
+          message: document.getElementById('f-ver-message').value,
+          min_account_age: parseInt(document.getElementById('f-ver-min_account_age').value) || 0,
+          kick_bots: document.getElementById('f-ver-kick_bots').checked,
+          dm_on_join: document.getElementById('f-ver-dm_on_join').checked,
+        };
+      } else if (section === 'tickets') {
+        body = {
+          category_id: document.getElementById('f-category_id').value || null,
+          support_role_id: document.getElementById('f-support_role_id').value || null,
+        };
+      }
+
+      try {
+        const r = await fetch(`/api/guild/${GUILD_ID}/${section}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        if (data.ok) {
+          showToast('Saved successfully.', 'success');
+          // Refresh settings
+          const sRes = await fetch(`/api/guild/${GUILD_ID}/settings`);
+          settingsData = await sRes.json();
+          if (document.getElementById('section-overview').style.display === 'block') buildOverview();
+        } else {
+          showToast(data.error || 'Failed to save.', 'error');
+        }
+      } catch (e) {
+        showToast('Network error. Try again.', 'error');
+      }
+    }
+
+    // ─── TOAST ───────────────────────────────
+
+    let toastTimer = null;
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast toast--' + type + ' toast--show';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        t.classList.remove('toast--show');
+      }, 3000);
+    }
+
+    // ─── INIT ────────────────────────────────
+
+    loadAll();
+  </script>
+</body>
+</html>
