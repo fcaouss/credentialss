@@ -4,6 +4,7 @@ import aiosqlite
 import sqlite3
 import asyncio
 import datetime
+import tempfile
 import random
 import os
 import threading
@@ -109,6 +110,11 @@ init_db_sync()
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_FILE_DIR"] = tempfile.gettempdir()
+app.config["SESSION_PERMANENT"] = True
+from flask_session import Session
+Session(app)
 
 def check_access(guild_id):
     MANAGE_GUILD = 0x20
